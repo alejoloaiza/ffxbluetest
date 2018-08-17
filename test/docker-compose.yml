@@ -1,0 +1,28 @@
+version: '3'
+
+networks:
+  basic:
+
+services:  
+  couchdb:
+    container_name: couchdb
+    image: library/couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+    networks:
+      - basic
+  goserver:
+    container_name: goserver
+    image: library/golang:alpine
+    working_dir: /go/src/ffxbluetest
+    command: go run server.go
+    volumes:
+      - ../:/go/src/ffxbluetest
+      - ../vendor/github.com/:/go/src/github.com/
+    ports:
+      - 3000:3000
+    networks:
+      - basic

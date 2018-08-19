@@ -17,8 +17,15 @@ services:
   goserver:
     container_name: goserver
     image: library/golang:alpine
+    environment:
+      - PROJECTPATH=/go/src/ffxbluetest
     working_dir: /go/src/ffxbluetest
-    command: go run server.go
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        go build -o server
+        ./server
     volumes:
       - ../:/go/src/ffxbluetest
       - ../vendor/github.com/:/go/src/github.com/
@@ -26,3 +33,5 @@ services:
       - 3000:3000
     networks:
       - basic
+    depends_on:
+      - couchdb

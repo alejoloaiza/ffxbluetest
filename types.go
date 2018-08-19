@@ -1,28 +1,11 @@
 package main
 
-import (
-	"encoding/json"
-	"errors"
-)
-
 type Article struct {
 	ID    string   `json:"id"`
 	Title string   `json:"title"`
 	Date  string   `json:"date"`
 	Body  string   `json:"body"`
 	Tags  []string `json:"tags"`
-}
-
-func (a *Article) toString() string {
-	str, _ := json.Marshal(a)
-	return string(str)
-}
-
-func (a *Article) validate() error {
-	if a.ID == "" || a.Title == "" || a.Date == "" || a.Body == "" || len(a.Tags) == 0 {
-		return errors.New("Cannot insert document, Mandatory field validation")
-	}
-	return nil
 }
 
 type CouchResponse struct {
@@ -45,4 +28,11 @@ type FinalResponse struct {
 	Count       int      `json:"count"`
 	Articles    []string `json:"articles"`
 	RelatedTags []string `json:"related_tags"`
+}
+type Configuration struct {
+	DBUrl       string
+	DBViews     string
+	DBIndexes   string
+	DBViewQuery string
+	ServerPort  string
 }

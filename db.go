@@ -6,20 +6,16 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var setup bool = false
-
-const dbUrl = "http://couchdb:5984/articles"
-const dbView = "/_design/myviews"
-const dbViewQuery = "/_design/myviews/_view/tags?startkey=['%s','%s']&endkey=startkey=['%s','%s']"
+var DBSetup bool = false
 
 func Save(doc string, id string) {
-	if !setup {
+	if !DBSetup {
 		if SetupDB() {
-			setup = true
+			DBSetup = true
 		}
 	}
 	req := fasthttp.AcquireRequest()
-	RequestURL := dbUrl + "/" + id
+	RequestURL := Localconfig.DBUrl + "/" + id
 	req.SetRequestURI(RequestURL)
 	req.Header.SetMethodBytes([]byte("PUT"))
 	req.SetBodyString(doc)
@@ -32,15 +28,17 @@ func Save(doc string, id string) {
 		println(string(bodyBytes))
 	}
 }
+
 func SetupDB() bool {
 	if CreateDB() && CreateIndex() && CreateViews() {
 		return true
 	}
 	return false
 }
+
 func CreateDB() bool {
 	req := fasthttp.AcquireRequest()
-	req.SetRequestURI(dbUrl)
+	req.SetRequestURI(Localconfig.DBUrl)
 	req.Header.SetMethodBytes([]byte("PUT"))
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
@@ -55,7 +53,31 @@ func CreateDB() bool {
 }
 
 func CreateIndex() bool {
-	return true
+	index := `{
+		"index": {
+		  "fields": [
+			"_id",
+			"tags.[]",
+		  "date"
+		  ]
+		},
+		"type": "json"
+	  }`
+	req := fasthttp.AcquireRequest()
+	req.SetRequestURI(Localconfig.DBUrl + Localconfig.DBIndexes)
+	req.Header.SetContentType("application/json")
+	req.Header.SetMethodBytes([]byte("POST"))
+	req.SetBodyString(index)
+	resp := fasthttp.AcquireResponse()
+	client := &fasthttp.Client{}
+	if err := client.Do(req, resp); err != nil {
+		println("Error:", err.Error())
+	} else {
+		bodyBytes := resp.Body()
+		println(string(bodyBytes))
+		return true
+	}
+	return false
 }
 func CreateViews() bool {
 	view := `{
@@ -67,7 +89,7 @@ func CreateViews() bool {
 		}
 	}`
 	req := fasthttp.AcquireRequest()
-	req.SetRequestURI(dbUrl + dbView)
+	req.SetRequestURI(Localconfig.DBUrl + Localconfig.DBViews)
 	req.Header.SetMethodBytes([]byte("PUT"))
 	req.SetBodyString(view)
 	resp := fasthttp.AcquireResponse()
@@ -83,8 +105,13 @@ func CreateViews() bool {
 }
 
 func GetDocumentByID(id string) []byte {
+	if !DBSetup {
+		if SetupDB() {
+			DBSetup = true
+		}
+	}
 	req := fasthttp.AcquireRequest()
-	RequestURL := fmt.Sprintf("%s/%s", dbUrl, id)
+	RequestURL := fmt.Sprintf("%s/%s", Localconfig.DBUrl, id)
 	req.SetRequestURI(RequestURL)
 	req.Header.SetMethodBytes([]byte("GET"))
 
@@ -100,10 +127,16 @@ func GetDocumentByID(id string) []byte {
 }
 
 func GetTaggedByDate(date string, tag string) []byte {
+	if !DBSetup {
+		if SetupDB() {
+			DBSetup = true
+		}
+	}
 	req := fasthttp.AcquireRequest()
 
-	RequestURL := fmt.Sprintf(dbUrl+dbViewQuery, date, tag, date, tag)
+	RequestURL := fmt.Sprintf(Localconfig.DBUrl+Localconfig.DBViewQuery, date, tag, date, tag)
 	req.SetRequestURI(RequestURL)
+	fmt.Println(RequestURL)
 	req.Header.SetMethodBytes([]byte("GET"))
 
 	resp := fasthttp.AcquireResponse()

@@ -31,9 +31,10 @@ func createArticle(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		ctx.Response.SetStatusCode(500)
 		fmt.Fprint(ctx, err)
+	} else {
+		ctx.Response.SetStatusCode(200)
+		fmt.Fprint(ctx, string(response))
 	}
-	ctx.Response.SetStatusCode(200)
-	fmt.Fprint(ctx, string(response))
 }
 func queryArticleByID(ctx *fasthttp.RequestCtx) {
 	ID, ok := ctx.UserValue("id").(string)
@@ -45,9 +46,10 @@ func queryArticleByID(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		ctx.Response.SetStatusCode(500)
 		fmt.Fprint(ctx, err)
+	} else {
+		ctx.Response.SetStatusCode(200)
+		fmt.Fprint(ctx, string(resp))
 	}
-	ctx.Response.SetStatusCode(200)
-	fmt.Fprint(ctx, string(resp))
 }
 func queryTaggedByDate(ctx *fasthttp.RequestCtx) {
 	Tag, ok := ctx.UserValue("tags").(string)
@@ -64,7 +66,8 @@ func queryTaggedByDate(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		ctx.Response.SetStatusCode(500)
 		fmt.Fprint(ctx, err)
+	} else {
+		ctx.Response.SetStatusCode(200)
+		fmt.Fprint(ctx, string(result))
 	}
-	ctx.Response.SetStatusCode(200)
-	fmt.Fprint(ctx, string(result))
 }

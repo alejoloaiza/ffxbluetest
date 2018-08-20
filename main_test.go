@@ -124,12 +124,13 @@ func TestNegativeCase1GetArticle(t *testing.T) {
 	}
 }
 func TestNegativeCaseConfig(t *testing.T) {
-	loadConfig("./config/config2.json")
-	if Localconfig != nil {
+	err := loadConfig("./config/config2.json")
+	if err == nil {
 		t.Fail()
 	}
 }
 func TestNegativeServer(t *testing.T) {
+	loadConfig("./config/config.json")
 	err := createRestServer()
 	if err == nil {
 		t.Fail()

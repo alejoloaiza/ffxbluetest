@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -15,7 +14,6 @@ func serviceQueryTaggedArticlesByDate(Tag string, Date string) ([]byte, error) {
 	if Tag == "" {
 		return nil, errors.New("Tag cannot be null on for this endpoint")
 	}
-	fmt.Println(Date)
 	entereddate, err := time.Parse(shortForm, Date)
 	if err != nil {
 		return nil, errors.New("the given Date is invalid")
@@ -29,6 +27,9 @@ func serviceQueryTaggedArticlesByDate(Tag string, Date string) ([]byte, error) {
 	err = json.Unmarshal(result, &rawresult)
 	if err != nil {
 		return nil, errors.Wrap(err, "error while trying to unmarshal response")
+	}
+	if len(rawresult.Rows) == 0 {
+		return nil, errors.New("no records found for the given parameters")
 	}
 	finalresult := transformRawResponseToFinal(rawresult)
 	return finalresult, nil
@@ -44,6 +45,9 @@ func serviceQueryArticleByID(ID string) ([]byte, error) {
 	}
 	draftArticle := Article{}
 	json.Unmarshal(resp, &draftArticle)
+	if draftArticle.validate() != nil {
+		return nil, errors.New("document not found")
+	}
 	return draftArticle.toBytes(), nil
 }
 func transformRawResponseToFinal(raw interface{}) []byte {

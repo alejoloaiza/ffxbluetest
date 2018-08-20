@@ -17,6 +17,11 @@ type RawQueryResponse struct {
 		Value []string `json:"value"`
 	} `json:"rows"`
 }
+
+type CouchDBResponse struct {
+	Ok bool `json:"ok"`
+}
+
 type FinalResponse struct {
 	Tag         string   `json:"tag"`
 	Count       int      `json:"count"`

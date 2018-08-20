@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -27,6 +28,11 @@ func Save(doc string, id string) ([]byte, error) {
 		return nil, errors.Wrap(err, "error while inserting in DB")
 	}
 	bodyBytes := resp.Body()
+	dbresponse := CouchDBResponse{}
+	json.Unmarshal(bodyBytes, &dbresponse)
+	if !dbresponse.Ok {
+		return nil, errors.New("error while inserting the new record on the DB")
+	}
 	return bodyBytes, nil
 
 }
@@ -49,6 +55,11 @@ func CreateDB() (bool, error) {
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
 		return false, errors.Wrap(err, "error while creating DB")
+	}
+	dbresponse := CouchDBResponse{}
+	json.Unmarshal(resp.Body(), &dbresponse)
+	if !dbresponse.Ok {
+		return false, errors.New("error while creating DB")
 	}
 	return true, nil
 }
@@ -74,6 +85,11 @@ func CreateIndex() (bool, error) {
 	if err := client.Do(req, resp); err != nil {
 		return false, errors.Wrap(err, "error while creating index in DB")
 	}
+	dbresponse := CouchDBResponse{}
+	json.Unmarshal(resp.Body(), &dbresponse)
+	if !dbresponse.Ok {
+		return false, errors.New("error while creating index in DB")
+	}
 	return true, nil
 }
 func CreateViews() (bool, error) {
@@ -93,6 +109,11 @@ func CreateViews() (bool, error) {
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
 		return false, errors.Wrap(err, "error while creating views in DB")
+	}
+	dbresponse := CouchDBResponse{}
+	json.Unmarshal(resp.Body(), &dbresponse)
+	if !dbresponse.Ok {
+		return false, errors.New("error while creating views in DB")
 	}
 	return true, nil
 }

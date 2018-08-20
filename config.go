@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Localconfig is a Singleton used to store the configuration loaded from the config.json so that others can use it.
 var Localconfig *Configuration
 
 func loadConfig(configpath string) error {

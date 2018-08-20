@@ -9,13 +9,13 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var DBSetup bool = false
+// DBSetup is used to control whether setup is required or not.
+var DBSetup = false
 
-func Save(doc string, id string) ([]byte, error) {
-	if !DBSetup {
-		if SetupDB() {
-			DBSetup = true
-		}
+// InsertArticle is used to store an article inside the DB.
+func InsertArticle(doc string, id string) ([]byte, error) {
+	if !DBSetup && SetupDB() {
+		DBSetup = true
 	}
 	req := fasthttp.AcquireRequest()
 	RequestURL := Localconfig.DBUrl + "/" + id
@@ -37,6 +37,7 @@ func Save(doc string, id string) ([]byte, error) {
 
 }
 
+// SetupDB will create the DB, indexes and views.
 func SetupDB() bool {
 	db, _ := CreateDB()
 	index, _ := CreateIndex()
@@ -47,6 +48,7 @@ func SetupDB() bool {
 	return false
 }
 
+// CreateDB connects to couchdb and creates the DB where all documents will be stored.
 func CreateDB() (bool, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(Localconfig.DBUrl)
@@ -64,6 +66,7 @@ func CreateDB() (bool, error) {
 	return true, nil
 }
 
+// CreateIndex will create an index on the tag array field and date field.
 func CreateIndex() (bool, error) {
 	index := `{
 		"index": {
@@ -92,6 +95,8 @@ func CreateIndex() (bool, error) {
 	}
 	return true, nil
 }
+
+// CreateViews creates a view inside the couchdb to extract the data by date and tags.
 func CreateViews() (bool, error) {
 	view := `{
 		"language": "javascript",
@@ -118,11 +123,10 @@ func CreateViews() (bool, error) {
 	return true, nil
 }
 
+// GetDocumentByID is used to extract from DB a particular Article.
 func GetDocumentByID(id string) ([]byte, error) {
-	if !DBSetup {
-		if SetupDB() {
-			DBSetup = true
-		}
+	if !DBSetup && SetupDB() {
+		DBSetup = true
 	}
 	req := fasthttp.AcquireRequest()
 	RequestURL := fmt.Sprintf("%s/%s", Localconfig.DBUrl, id)
@@ -137,16 +141,14 @@ func GetDocumentByID(id string) ([]byte, error) {
 	return bodyBytes, nil
 }
 
+// GetTaggedByDate is used to extract from DB the information of tagged articles on a given date.
 func GetTaggedByDate(date string, tag string) ([]byte, error) {
-	if !DBSetup {
-		if SetupDB() {
-			DBSetup = true
-		}
+	if !DBSetup && SetupDB() {
+		DBSetup = true
 	}
 	req := fasthttp.AcquireRequest()
 	RequestURL := fmt.Sprintf(Localconfig.DBUrl+Localconfig.DBViewQuery, date, tag, date, tag)
 	req.SetRequestURI(RequestURL)
-	fmt.Println(RequestURL)
 	req.Header.SetMethodBytes([]byte("GET"))
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}

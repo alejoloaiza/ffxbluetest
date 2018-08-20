@@ -3,5 +3,6 @@
     "DBViews": "/_design/myviews",
     "DBIndexes": "/_index/",
     "DBViewQuery": "/_design/myviews/_view/tags?startkey=[\"%s\",\"%s\"]&endkey=[\"%s\",\"%s\"]",
-    "ServerPort": ":3000"
+    "ServerPort": ":3000",
+    "MaxArticlesInQuery": 10
 }

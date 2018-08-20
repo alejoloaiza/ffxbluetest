@@ -1,12 +1,18 @@
 
 # TECHNICAL TEST - Article API
 
+This code is 100% in complience with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest)
+
+`Test coverage is 85.3%`        
+
 ## Introduction:
 I decided to use Golang (my favorite programming language) to solve this problem. For me the main problem is PERFORMANCE, that is what I always think about when designing any solution, even if it's a simple API, so I dedicated my energy mainly on PERFORMANCE. I decided to use the Go library fasthttp (which is 10 times faster than Go native http) and decided to use CouchDB a fast Non-SQL database written in Erlang (a high performance programming language).
 But dont worry, you dont have to install anything (not even Go), everything is dockerized.
 
+
+
 ## Project Structure: 
-- I believe in SOLID principle, especially the letter S (Single responsability) its what I always think when defining a structure. So because of this the project has these files:
+I believe in SOLID principle, especially the letter S (Single responsability) its what I always think when defining a structure. So because of this the project has these files:
 - db.go -> Responsible for handling all DB (CouchDB) logic.
 - types.go -> Responsible for the definition of my structs.
 - http.go -> It's responsible for my http server and it's also my entry point (main).
@@ -14,8 +20,12 @@ But dont worry, you dont have to install anything (not even Go), everything is d
 - config.go -> Responsible for loading and having the config values.
 - main_test.go -> Responsible for Unit testing and Benchmark test methods.
 
+## Error handling:
+I usually use the github.com/pkg/errors library for handling errors and early returns technique is also recommended in Golang, so I always try to use it. 
+
 ## Assumptions:
-- If the "POST /articles" API receives an article request with the same ID (Already exists), will not update it, articles can be created only once. 
+- If the "POST /articles" API receives an article request with the same ID (Already exists), will not update it, It will show an error, articles can be created only once.
+ 
 
 ## Benchmarks:
 Luckily, Golang its so good that has a benchmark package included, I dont need to install anything new to run the benchmarks, just create a couple of unit testing files, run a command and we are done.
@@ -62,7 +72,7 @@ Machine details:
 
 ## Pre-Requisites:
 - Git (just to clone the repo)      
-- Docker and Docker-compose (On MAC they come together on Linux come separatedly)       
+- Docker and Docker-compose (On MAC they come together on Linux come separatedly)             
 Check using these commands      
 `docker --version`      
 `docker-compose --version`      
@@ -95,3 +105,15 @@ If you have Go installed you can run this command:
 
 If you dont, just run the command inside the Go docker image like this:
 `docker exec -it goserver go test -cover`
+
+## Tell us what you thought of the test and how long it took you to complete:
+
+I really enjoyed the test, its very straightforward but it gives you space and freedom to play with your creativity and to challenge yourself into building something good. When I was trying to build the query for the GET articles by date and tag, I thought changing to a SQL DB will make this easier, but I challenged myself and did some research about views in CouchDB and I was able to extract the data using that. I have to be honest I'm no expert in CouchDB, it's the second time I have used it, but I do know it's fast and powerful.           
+
+It took me around 3-4 days (Not full days): First day around 1.5 hours, Second day around 2 hours, Third day around 3 hours and the fourth day around 2.5 hours.
+
+##  Tell us what else you would have added to the code if you had more time
+
+- Security (both DB and API)
+- Better benchmarks using Apache Benchmark.
+- A good logger with verbosity levels.

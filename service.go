@@ -68,6 +68,9 @@ func transformRawResponseToFinal(raw interface{}) []byte {
 			related[tags] = true
 		}
 	}
+	if len(ids) > Localconfig.MaxArticlesInQuery {
+		ids = ids[len(ids)-Localconfig.MaxArticlesInQuery:]
+	}
 	relatedtags := []string{}
 	for tag := range related {
 		if tag != newresp.Tag {
@@ -89,7 +92,7 @@ func serviceCreateArticle(body []byte) ([]byte, error) {
 	if err = draftArticle.validate(); err != nil {
 		return nil, errors.Wrap(err, "validation failed, mandatory fields missing")
 	}
-	dbresult, err := Save(draftArticle.toString(), draftArticle.ID)
+	dbresult, err := InsertArticle(draftArticle.toString(), draftArticle.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error encountered while inserting into DB")
 	}

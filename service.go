@@ -2,51 +2,57 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"time"
 
-	"github.com/valyala/fasthttp"
+	"github.com/pkg/errors"
 )
 
 const shortForm = "20060102"
 const longForm = "2006-01-02"
 
-func queryTaggedArticlesByDate(ctx *fasthttp.RequestCtx) {
-	Tag, ok := ctx.UserValue("tags").(string)
-	if !ok {
-		fmt.Fprint(ctx, "Error converting Tag to string\n")
-	}
+func serviceQueryTaggedArticlesByDate(Tag string, Date string) ([]byte, error) {
 	if Tag == "" {
-		fmt.Fprint(ctx, "Tag is empty, please give one Tag\n")
+		return nil, errors.New("Tag cannot be null on for this endpoint")
 	}
-	Date, ok := ctx.UserValue("date").(string)
-	if !ok {
-		fmt.Fprint(ctx, "Error converting Date to string\n")
-	}
+	fmt.Println(Date)
 	entereddate, err := time.Parse(shortForm, Date)
 	if err != nil {
-		fmt.Fprint(ctx, "Date is invalid\n")
+		return nil, errors.New("the given Date is invalid")
 	}
 	Date = entereddate.Format(longForm)
-	result := GetTaggedByDate(Date, Tag)
+	result, err := GetTaggedByDate(Date, Tag)
+	if err != nil {
+		return nil, errors.Wrap(err, "error in the call to the DB method")
+	}
 	rawresult := RawQueryResponse{}
 	err = json.Unmarshal(result, &rawresult)
 	if err != nil {
-		fmt.Fprint(ctx, "Error parsing response")
+		return nil, errors.Wrap(err, "error while trying to unmarshal response")
 	}
 	finalresult := transformRawResponseToFinal(rawresult)
-	fmt.Fprint(ctx, string(finalresult))
+	return finalresult, nil
 
 }
-
+func serviceQueryArticleByID(ID string) ([]byte, error) {
+	if ID == "" {
+		return nil, errors.New("ID cannot be null on article search")
+	}
+	resp, err := GetDocumentByID(ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error in the call to the DB method")
+	}
+	draftArticle := Article{}
+	json.Unmarshal(resp, &draftArticle)
+	return draftArticle.toBytes(), nil
+}
 func transformRawResponseToFinal(raw interface{}) []byte {
 	oldresp, ok := raw.(RawQueryResponse)
 	if !ok {
 		return []byte("Error converting query response\n")
 	}
 	newresp := FinalResponse{}
-	newresp.Count = oldresp.Offset
+	newresp.Count = len(oldresp.Rows)
 	if len(oldresp.Rows) > 0 {
 		newresp.Tag = oldresp.Rows[0].Key[1]
 	}
@@ -70,39 +76,30 @@ func transformRawResponseToFinal(raw interface{}) []byte {
 	return bytesnewresp
 }
 
-func queryArticleByID(ctx *fasthttp.RequestCtx) {
-	ID, ok := ctx.UserValue("id").(string)
-	if !ok {
-		fmt.Fprint(ctx, "Error converting id to string\n")
-	}
-	if ID == "" {
-		fmt.Fprint(ctx, "ID is empty, please give one id\n")
-	}
-	resp := GetDocumentByID(ID)
-	draftArticle := Article{}
-	json.Unmarshal(resp, &draftArticle)
-	fmt.Fprint(ctx, draftArticle.toString())
-}
-
-func createArticle(ctx *fasthttp.RequestCtx) {
-	body := ctx.PostBody()
+func serviceCreateArticle(body []byte) ([]byte, error) {
 	draftArticle := Article{}
 	err := json.Unmarshal(body, &draftArticle)
 	if err != nil {
-		fmt.Fprint(ctx, "Error while parsing the json, invalid format\n")
+		return nil, errors.Wrap(err, "error while parsing the json, invalid format")
 	}
 	if err = draftArticle.validate(); err != nil {
-		fmt.Fprintf(ctx, "Error %s\n", err)
+		return nil, errors.Wrap(err, "validation failed, mandatory fields missing")
 	}
-	Save(draftArticle.toString(), draftArticle.ID)
-	fmt.Fprint(ctx, "Ok\n")
+	dbresult, err := Save(draftArticle.toString(), draftArticle.ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error encountered while inserting into DB")
+	}
+	return dbresult, nil
 }
 
+func (a *Article) toBytes() []byte {
+	bytes, _ := json.Marshal(a)
+	return bytes
+}
 func (a *Article) toString() string {
 	str, _ := json.Marshal(a)
 	return string(str)
 }
-
 func (a *Article) validate() error {
 	if a.ID == "" || a.Title == "" || a.Date == "" || a.Body == "" || len(a.Tags) == 0 {
 		return errors.New("Cannot insert document, Mandatory field validation")

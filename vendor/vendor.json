@@ -9,6 +9,12 @@
 			"revisionTime": "2018-02-11T07:41:05Z"
 		},
 		{
+			"checksumSHA1": "LR6odE7pg3fIs4upq1Iqv2xY5zw=",
+			"path": "github.com/klauspost/compress",
+			"revision": "b50017755d442260d792c34c7c43216d9ba7ffc7",
+			"revisionTime": "2018-08-01T09:52:37Z"
+		},
+		{
 			"checksumSHA1": "rmCbOBewXcbEdHRerzoanS+kI2U=",
 			"path": "github.com/klauspost/compress/flate",
 			"revision": "b50017755d442260d792c34c7c43216d9ba7ffc7",
@@ -37,6 +43,12 @@
 			"path": "github.com/nu7hatch/gouuid",
 			"revision": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3",
 			"revisionTime": "2013-12-21T20:05:32Z"
+		},
+		{
+			"checksumSHA1": "ljd3FhYRJ91cLZz3wsH9BQQ2JbA=",
+			"path": "github.com/pkg/errors",
+			"revision": "816c9085562cd7ee03e7f8188a1cfd942858cded",
+			"revisionTime": "2018-03-11T21:45:15Z"
 		},
 		{
 			"checksumSHA1": "LTOa3BADhwvT0wFCknPueQALm8I=",

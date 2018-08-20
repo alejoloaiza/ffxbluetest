@@ -6,7 +6,7 @@ import "fmt"
 
 var Localconfig *Configuration
 
-func GetConfig(configpath string) *Configuration {
+func loadConfig(configpath string) {
 	file, _ := os.Open(configpath)
 	defer file.Close()
 	decoder := json.NewDecoder(file)
@@ -16,5 +16,4 @@ func GetConfig(configpath string) *Configuration {
 		fmt.Println("error:", err)
 	}
 	Localconfig = &configuration
-	return &configuration
 }

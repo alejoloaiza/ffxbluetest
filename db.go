@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
+
 	"github.com/valyala/fasthttp"
 )
 
 var DBSetup bool = false
 
-func Save(doc string, id string) {
+func Save(doc string, id string) ([]byte, error) {
 	if !DBSetup {
 		if SetupDB() {
 			DBSetup = true
@@ -22,37 +24,36 @@ func Save(doc string, id string) {
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
-		println("Error:", err.Error())
-	} else {
-		bodyBytes := resp.Body()
-		println(string(bodyBytes))
+		return nil, errors.Wrap(err, "error while inserting in DB")
 	}
+	bodyBytes := resp.Body()
+	return bodyBytes, nil
+
 }
 
 func SetupDB() bool {
-	if CreateDB() && CreateIndex() && CreateViews() {
+	db, _ := CreateDB()
+	index, _ := CreateIndex()
+	views, _ := CreateViews()
+	if db && index && views {
 		return true
 	}
 	return false
 }
 
-func CreateDB() bool {
+func CreateDB() (bool, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(Localconfig.DBUrl)
 	req.Header.SetMethodBytes([]byte("PUT"))
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
-		println("Error:", err.Error())
-	} else {
-		bodyBytes := resp.Body()
-		println(string(bodyBytes))
-		return true
+		return false, errors.Wrap(err, "error while creating DB")
 	}
-	return false
+	return true, nil
 }
 
-func CreateIndex() bool {
+func CreateIndex() (bool, error) {
 	index := `{
 		"index": {
 		  "fields": [
@@ -71,15 +72,11 @@ func CreateIndex() bool {
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
-		println("Error:", err.Error())
-	} else {
-		bodyBytes := resp.Body()
-		println(string(bodyBytes))
-		return true
+		return false, errors.Wrap(err, "error while creating index in DB")
 	}
-	return false
+	return true, nil
 }
-func CreateViews() bool {
+func CreateViews() (bool, error) {
 	view := `{
 		"language": "javascript",
 		"views": {
@@ -95,16 +92,12 @@ func CreateViews() bool {
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
-		println("Error:", err.Error())
-	} else {
-		bodyBytes := resp.Body()
-		println(string(bodyBytes))
-		return true
+		return false, errors.Wrap(err, "error while creating views in DB")
 	}
-	return false
+	return true, nil
 }
 
-func GetDocumentByID(id string) []byte {
+func GetDocumentByID(id string) ([]byte, error) {
 	if !DBSetup {
 		if SetupDB() {
 			DBSetup = true
@@ -114,38 +107,31 @@ func GetDocumentByID(id string) []byte {
 	RequestURL := fmt.Sprintf("%s/%s", Localconfig.DBUrl, id)
 	req.SetRequestURI(RequestURL)
 	req.Header.SetMethodBytes([]byte("GET"))
-
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
-		println("Error:", err.Error())
-	} else {
-		bodyBytes := resp.Body()
-		return bodyBytes
+		return nil, errors.Wrap(err, "error while getting article from DB")
 	}
-	return []byte("")
+	bodyBytes := resp.Body()
+	return bodyBytes, nil
 }
 
-func GetTaggedByDate(date string, tag string) []byte {
+func GetTaggedByDate(date string, tag string) ([]byte, error) {
 	if !DBSetup {
 		if SetupDB() {
 			DBSetup = true
 		}
 	}
 	req := fasthttp.AcquireRequest()
-
 	RequestURL := fmt.Sprintf(Localconfig.DBUrl+Localconfig.DBViewQuery, date, tag, date, tag)
 	req.SetRequestURI(RequestURL)
 	fmt.Println(RequestURL)
 	req.Header.SetMethodBytes([]byte("GET"))
-
 	resp := fasthttp.AcquireResponse()
 	client := &fasthttp.Client{}
 	if err := client.Do(req, resp); err != nil {
-		println("Error:", err.Error())
-	} else {
-		bodyBytes := resp.Body()
-		return bodyBytes
+		return nil, errors.Wrap(err, "error while getting tagged by date from DB")
 	}
-	return []byte("")
+	bodyBytes := resp.Body()
+	return bodyBytes, nil
 }

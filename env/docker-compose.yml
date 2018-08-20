@@ -1,8 +1,5 @@
 version: '3'
 
-networks:
-  basic:
-
 services:  
   couchdb:
     container_name: couchdb
@@ -13,7 +10,8 @@ services:
     ports:
       - 5984:5984
     networks:
-      - basic
+      app_net:
+        ipv4_address: 172.16.239.2
   goserver:
     container_name: goserver
     image: library/golang:alpine
@@ -32,6 +30,14 @@ services:
     ports:
       - 3000:3000
     networks:
-      - basic
+      app_net:
+        ipv4_address: 172.16.239.3
     depends_on:
       - couchdb
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.239.0/24

@@ -1,5 +1,5 @@
 {
-    "DBUrl": "http://couchdb:5984/articles",
+    "DBUrl": "http://172.16.239.2:5984/articles",
     "DBViews": "/_design/myviews",
     "DBIndexes": "/_index/",
     "DBViewQuery": "/_design/myviews/_view/tags?startkey=[\"%s\",\"%s\"]&endkey=[\"%s\",\"%s\"]",

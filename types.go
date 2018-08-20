@@ -8,12 +8,6 @@ type Article struct {
 	Tags  []string `json:"tags"`
 }
 
-type CouchResponse struct {
-	Ok  bool   `json:"ok"`
-	ID  string `json:"id"`
-	Rev string `json:"rev"`
-}
-
 type RawQueryResponse struct {
 	TotalRows int `json:"total_rows"`
 	Offset    int `json:"offset"`

@@ -1,7 +1,7 @@
 
 # TECHNICAL TEST - Article API
 
-This code is 100% in complience with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest)
+This code is 100% in compliance with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest)
 
 `Test coverage is 85.3%`        
 
@@ -72,7 +72,7 @@ Machine details:
 
 ## Pre-Requisites:
 - Git (just to clone the repo)      
-- Docker and Docker-compose (On MAC they come together on Linux come separatedly)             
+- Docker and Docker-compose (On MAC they come together on Linux come separately)             
 Check using these commands      
 `docker --version`      
 `docker-compose --version`      
@@ -108,7 +108,7 @@ If you dont, just run the command inside the Go docker image like this:
 
 ## Tell us what you thought of the test and how long it took you to complete:
 
-I really enjoyed the test, its very straightforward but it gives you space and freedom to play with your creativity and to challenge yourself into building something good. When I was trying to build the query for the GET articles by date and tag, I thought changing to a SQL DB will make this easier, but I challenged myself and did some research about views in CouchDB and I was able to extract the data using that. I have to be honest I'm no expert in CouchDB, it's the second time I have used it, but I do know it's fast and powerful.           
+I really enjoyed the test, it's very straightforward, but it gives you space and freedom to play with your creativity and to challenge yourself into building something good. When I was trying to build the query for the GET articles by date and tag, I thought changing to a SQL DB will make this easier, but I challenged myself and did some research about views in CouchDB and I was able to extract the data using that. I have to be honest I'm no expert in CouchDB, it's the second time I have used it, but I do know it's fast and powerful.           
 
 It took me around 3-4 days (Not full days): First day around 1.5 hours, Second day around 2 hours, Third day around 3 hours and the fourth day around 2.5 hours.
 

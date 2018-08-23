@@ -47,5 +47,6 @@ before_install:
   # This is just our script to setup all the database tables and other fixtures
   # we need. You should remove this if it's not necessary or you have other
   # scripts handling this.
-  - cd ./envs/
+  - echo $TRAVIS_BUILD_DIR
+  - cd $TRAVIS_BUILD_DIR/envs
   - ./start.sh

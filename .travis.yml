@@ -48,5 +48,5 @@ before_install:
   # we need. You should remove this if it's not necessary or you have other
   # scripts handling this.
   - echo $TRAVIS_BUILD_DIR
-  - cd $TRAVIS_BUILD_DIR/envs
+  - cd $TRAVIS_BUILD_DIR/env
   - ./start.sh

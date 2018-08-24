@@ -49,7 +49,7 @@ before_install:
   # scripts handling this.
   - echo $TRAVIS_BUILD_DIR
   - cd $TRAVIS_BUILD_DIR/env
-  - ./start.sh
+  - ./startdb.sh
   - cd $TRAVIS_BUILD_DIR
 install:
   # Add Godeps dependencies to GOPATH and PATH

@@ -1,9 +1,5 @@
 language: go
 env:
-  # You may want to update this to whatever the latest version is, or keep it
-  # the same as your local machines. However, I have only tested it with 1.8.0+.
-  # There should be a time in the future when this is not necessary - it is
-  # explained in more detail below.
   DOCKER_COMPOSE_VERSION: 1.18.0
 go:
   - tip
@@ -24,7 +20,7 @@ before_install:
   - ./startdb.sh
   - cd $TRAVIS_BUILD_DIR
   - docker ps
-install: true
+  - go version
 before_script:
   - go install ./vendor/github.com/...
 script: goveralls -service=travis-ci

@@ -1,7 +1,8 @@
 
 # TECHNICAL TEST - Article API
 
-This code is 100% in compliance with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest)
+This code is 100% in compliance with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest) [![Build](https://travis-ci.org/alejoloaiza/ffxbluetest.svg?branch=master)](https://travis-ci.org/alejoloaiza/ffxbluetest.svg?branch=master)
+
 
 `Test coverage is 85.3%`        
 

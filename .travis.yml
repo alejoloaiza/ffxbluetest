@@ -51,4 +51,7 @@ before_install:
   - cd $TRAVIS_BUILD_DIR/env
   - ./start.sh
   - cd $TRAVIS_BUILD_DIR
-script: go test ./...
+install:
+  # Add Godeps dependencies to GOPATH and PATH
+  - export GOPATH="${TRAVIS_BUILD_DIR}/vendor:$GOPATH"
+script: go build

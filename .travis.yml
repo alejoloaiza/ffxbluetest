@@ -25,6 +25,13 @@ before_install:
   - cd $TRAVIS_BUILD_DIR/env
   - ./startdb.sh
   - cd $TRAVIS_BUILD_DIR
-install:
-  - export GOPATH="${TRAVIS_BUILD_DIR}/vendor:$GOPATH"
+install: true
+before_script:
+  - go install ./vendor/github.com/buaazp/fasthttprouter
+  - go install ./vendor/github.com/klauspost/compress
+  - go install ./vendor/github.com/klauspost/cpuid
+  - go install ./vendor/github.com/nu7hatch/gouuid
+  - go install ./vendor/github.com/pkg/errors
+  - go install ./vendor/github.com/valyala/bytebufferpool
+  - go install ./vendor/github.com/valyala/fasthttp
 script: goveralls -service=travis-ci

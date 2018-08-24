@@ -50,3 +50,5 @@ before_install:
   - echo $TRAVIS_BUILD_DIR
   - cd $TRAVIS_BUILD_DIR/env
   - ./start.sh
+  - cd $TRAVIS_BUILD_DIR
+script: go test ./...

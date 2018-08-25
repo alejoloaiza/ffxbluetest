@@ -130,11 +130,10 @@ func TestNegativeCaseConfig(t *testing.T) {
 	}
 }
 
-/*
 func TestNegativeServer(t *testing.T) {
 	loadConfig("./config/config.json")
 	err := createRestServer()
 	if err == nil {
 		t.Fail()
 	}
-}*/
+}

@@ -1,10 +1,9 @@
 
 # TECHNICAL TEST - Article API
 
-This code is 100% in compliance with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest) [![Build](https://travis-ci.org/alejoloaiza/ffxbluetest.svg?branch=master)](https://travis-ci.org/alejoloaiza/ffxbluetest.svg?branch=master)
-
-
-`Test coverage is 85.3%`        
+This code is 100% in compliance with golint, go_vet and gofmt :). Check this for more details: [![Go Report Card](https://goreportcard.com/badge/github.com/alejoloaiza/ffxbluetest)](https://goreportcard.com/report/github.com/alejoloaiza/ffxbluetest) [![Build](https://travis-ci.org/alejoloaiza/ffxbluetest.svg?branch=master)](https://travis-ci.org/alejoloaiza/ffxbluetest)
+[![Coverage Status](https://coveralls.io/repos/github/alejoloaiza/ffxbluetest/badge.svg?branch=master)](https://coveralls.io/github/alejoloaiza/ffxbluetest?branch=master)
+    
 
 ## Introduction:
 I decided to use Golang (my favorite programming language) to solve this problem. For me the main problem is PERFORMANCE, that is what I always think about when designing any solution, even if it's a simple API, so I dedicated my energy mainly on PERFORMANCE. I decided to use the Go library fasthttp (which is 10 times faster than Go native http) and decided to use CouchDB a fast Non-SQL database written in Erlang (a high performance programming language).

@@ -17,7 +17,7 @@ before_install:
   - echo $PATH
   - echo $TRAVIS_BUILD_DIR
   - cd $TRAVIS_BUILD_DIR/env
-  - ./startdb.sh
+  - ./start.sh
   - cd $TRAVIS_BUILD_DIR
   - docker ps
   - go version

@@ -27,7 +27,6 @@ func createRestServer() error {
 }
 func createArticle(ctx *fasthttp.RequestCtx) {
 	body := ctx.PostBody()
-	panic("Error inesperado, prueba de Travis CI")
 	response, err := serviceCreateArticle(body)
 	if err != nil {
 		ctx.Response.SetStatusCode(500)
